@@ -1,319 +1,304 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlTag">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ندى صباح - Medical Study Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { fontFamily: { cairo: ['Cairo', 'sans-serif'] } } }
-        }
-    </script>
-    <style> body { font-family: 'Cairo', sans-serif; } </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nada's Academic Tracker | تتبع الدراسة والمصاريف</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --accent: #3498db;
+      --danger: #e74c3c;
+      --success: #2ecc71;
+      --bg: #f4f6f9;
+      --card-bg: #ffffff;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--primary);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .lang-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: var(--primary);
+      border-bottom: 2px solid var(--bg);
+      padding-bottom: 10px;
+    }
+
+    .form-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+    input, button, select {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    input { flex: 1; min-width: 120px; }
+
+    button.add-btn {
+      background: var(--success);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      text-align: inherit;
+    }
+
+    th { background: #fafafa; }
+
+    .progress-bar {
+      background: #eee;
+      border-radius: 10px;
+      height: 12px;
+      overflow: hidden;
+      width: 100px;
+      display: inline-block;
+    }
+
+    .progress-fill {
+      background: var(--accent);
+      height: 100%;
+    }
+
+    .danger-text { color: var(--danger); font-weight: bold; }
+    .delete-btn { background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen p-4 sm:p-8 transition-colors duration-300">
+<body>
 
-    <div class="max-w-7xl mx-auto space-y-6">
-        
-        <!-- Header -->
-        <header class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-wrap justify-between items-center gap-4">
-            <div>
-                <h1 id="headerName" class="text-2xl sm:text-3xl font-extrabold text-purple-600 dark:text-purple-400">ندى صباح</h1>
-                <p id="headerInfo" class="text-sm text-slate-500 dark:text-slate-400 mt-1">جامعة أشور • كلية الطب • المرحلة الثالثة</p>
-            </div>
-            <div class="flex flex-wrap items-center gap-2">
-                <button onclick="toggleDarkMode()" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-bold shadow-sm">
-                    <i class="fa-solid fa-moon"></i> <span id="darkText">الوضع الداكن</span>
-                </button>
-            </div>
-        </header>
+<div class="container">
+  <header>
+    <div>
+      <h1 id="title">كلية الطب - المرحلة الثالثة</h1>
+      <p id="subtitle">جامعة أشور | نظام تتبع المحاضرات والغيابات والمصاريف</p>
+    </div>
+    <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">English</button>
+  </header>
 
-        <!-- Stats -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-center">
-                <p class="text-xs text-slate-400 font-bold">نسبة إنجاز الدراسة</p>
-                <p id="overallStudyProgress" class="text-xl font-extrabold text-purple-600 mt-1">0%</p>
-            </div>
-            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-center">
-                <p class="text-xs text-slate-400 font-bold">نسبة إنجاز المراجعة</p>
-                <p id="overallReviewProgress" class="text-xl font-extrabold text-indigo-600 mt-1">0%</p>
-            </div>
-            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-center">
-                <p class="text-xs text-slate-400 font-bold">المصروف هذا الشهر</p>
-                <p id="statSpent" class="text-xl font-extrabold text-red-500 mt-1">0 د.ع</p>
-            </div>
-            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-center">
-                <p class="text-xs text-slate-400 font-bold">المبلغ الموفر</p>
-                <p id="statSaved" class="text-xl font-extrabold text-emerald-500 mt-1">0 د.ع</p>
-            </div>
-        </div>
-
-        <!-- Dashboard Body -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <!-- Subjects & Exams -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- Subjects -->
-                <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-book-medical text-purple-500"></i> المواد والملازم الدراسية
-                        </h2>
-                        <button onclick="addSubject()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-sm transition shadow-sm">+ إضافة مادة</button>
-                    </div>
-                    <div id="subjectsContainer" class="space-y-6"></div>
-                </div>
-
-                <!-- Exams -->
-                <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-calendar-check text-purple-500"></i> جدول الامتحانات والمواعيد
-                        </h2>
-                        <button onclick="addExam()" class="px-3 py-1.5 bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300 font-bold rounded-xl text-xs">+ إضافة موعد</button>
-                    </div>
-                    <div id="examsList" class="space-y-3"></div>
-                </div>
-            </div>
-
-            <!-- Side Tools -->
-            <div class="space-y-6">
-                
-                <!-- Timer -->
-                <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 text-center">
-                    <div class="flex justify-center gap-4 mb-4 border-b border-slate-100 dark:border-slate-800 pb-3 text-sm font-bold">
-                        <button onclick="switchTimerMode('sw')" id="btnSW" class="text-purple-600 border-b-2 border-purple-600 pb-1">Stopwatch</button>
-                        <button onclick="switchTimerMode('pomo')" id="btnPomo" class="text-slate-400 pb-1">Pomodoro</button>
-                    </div>
-                    <div id="timerDisplay" class="text-4xl font-mono font-extrabold text-purple-600 dark:text-purple-400 my-4">00:00:00</div>
-                    <div class="flex justify-center gap-2">
-                        <button onclick="startTimer()" class="px-4 py-2 bg-emerald-500 text-white font-bold rounded-xl text-xs">تشغيل</button>
-                        <button onclick="pauseTimer()" class="px-4 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs">إيقاف</button>
-                        <button onclick="resetTimer()" class="px-4 py-2 bg-slate-400 text-white font-bold rounded-xl text-xs">تصفير</button>
-                    </div>
-                </div>
-
-                <!-- Absences -->
-                <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800">
-                    <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-user-clock text-amber-500"></i> سجل الغيابات والإنذارات
-                    </h2>
-                    <div id="absenceList" class="space-y-4"></div>
-                </div>
-
-                <!-- Finance -->
-                <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-wallet text-emerald-500"></i> المصاريف الشهرية
-                        </h2>
-                        <button onclick="setBudget()" class="text-xs text-purple-600 underline font-bold">تحديد الميزانية</button>
-                    </div>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between bg-slate-50 dark:bg-slate-800 p-3 rounded-xl">
-                            <span>الميزانية الشهرية:</span>
-                            <span id="budgetVal" class="font-bold">0 د.ع</span>
-                        </div>
-                        <div class="flex justify-between bg-slate-50 dark:bg-slate-800 p-3 rounded-xl">
-                            <span>إجمالي المصروف:</span>
-                            <span id="spentVal" class="font-bold text-red-500">0 د.ع</span>
-                        </div>
-                        <div class="flex justify-between bg-slate-50 dark:bg-slate-800 p-3 rounded-xl">
-                            <span>المتبقي (الوفر):</span>
-                            <span id="savedVal" class="font-bold text-emerald-500">0 د.ع</span>
-                        </div>
-                    </div>
-                    <button onclick="addExpense()" class="w-full py-2 bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300 font-bold rounded-xl text-xs">
-                        + إضافة مصروف يومي
-                    </button>
-                </div>
-
-            </div>
-
-        </div>
+  <!-- المواد والمحاضرات -->
+  <div class="card">
+    <h2 id="subjectsHeading">المواد والمحاضرات</h2>
+    <div class="form-group">
+      <input type="text" id="subjectName" placeholder="اسم المادة">
+      <input type="number" id="totalLecs" placeholder="إجمالي المحاضرات">
+      <input type="number" id="completedLecs" placeholder="المكتملة">
+      <input type="number" id="absences" placeholder="عدد الغيابات">
+      <input type="number" id="warningLimit" placeholder="حد الإنذار (غيابات)">
+      <button class="add-btn" onclick="addSubject()" id="addSubjectBtn">إضافة مادة</button>
     </div>
 
-    <script>
-        let store = JSON.parse(localStorage.getItem('nada_med_full_db')) || {
-            subjects: [
-                { id: 1, name: 'الباطنية (Internal Medicine)', lecs: [{ name: 'Intro to Cardiology', studied: false, reviewed: false }], abs: 0, w1: 2, w2: 4, w3: 6, fail: 8 }
-            ],
-            exams: [{ id: 1, title: 'Midterm OSCE', date: '2026-11-15', type: 'عملي' }],
-            budget: 250000,
-            expenses: []
-        };
+    <table>
+      <thead>
+        <tr>
+          <th id="thSubject">المادة</th>
+          <th id="thProgress">الإنجاز</th>
+          <th id="thAbsence">الغيابات</th>
+          <th id="thWarning">حالة الإنذار</th>
+          <th id="thAction">إجراء</th>
+        </tr>
+      </thead>
+      <tbody id="subjectsTable"></tbody>
+    </table>
+  </div>
 
-        function save() {
-            localStorage.setItem('nada_med_full_db', JSON.stringify(store));
-            renderAll();
-        }
+  <!-- المصاريف -->
+  <div class="card">
+    <h2 id="expensesHeading">سجل المصاريف</h2>
+    <div class="form-group">
+      <input type="text" id="expDesc" placeholder="وصف المصروف (مثلاً: ملازم، نقل...)">
+      <input type="number" id="expAmount" placeholder="المبلغ">
+      <button class="add-btn" onclick="addExpense()" id="addExpBtn">إضافة مصروف</button>
+    </div>
 
-        function renderAll() {
-            renderSubjects();
-            renderExams();
-            renderAbsences();
-            renderFinance();
-        }
+    <table>
+      <thead>
+        <tr>
+          <th id="thExpDesc">الوصف</th>
+          <th id="thExpAmount">المبلغ</th>
+          <th id="thExpAction">إجراء</th>
+        </tr>
+      </thead>
+      <tbody id="expensesTable"></tbody>
+    </table>
+    <h3><span id="totalExpText">الإجمالي:</span> <span id="totalExpense">0</span></h3>
+  </div>
+</div>
 
-        function renderSubjects() {
-            const container = document.getElementById('subjectsContainer');
-            container.innerHTML = '';
-            let totalLecs = 0, studiedCount = 0, reviewedCount = 0;
+<script>
+  let currentLang = 'ar';
 
-            store.subjects.forEach((subj, sIdx) => {
-                let sStudied = 0, sReviewed = 0;
-                totalLecs += subj.lecs.length;
+  const translations = {
+    ar: {
+      title: "كلية الطب - المرحلة الثالثة",
+      subtitle: "جامعة أشور | نظام تتبع المحاضرات والغيابات والمصاريف",
+      langBtn: "English",
+      subjectsHeading: "المواد والمحاضرات",
+      subjectName: "اسم المادة",
+      totalLecs: "إجمالي المحاضرات",
+      completedLecs: "المكتملة",
+      absences: "عدد الغيابات",
+      warningLimit: "حد الإنذار (غيابات)",
+      addSubjectBtn: "إضافة مادة",
+      thSubject: "المادة",
+      thProgress: "الإنجاز",
+      thAbsence: "الغيابات",
+      thWarning: "حالة الإنذار",
+      thAction: "إجراء",
+      expensesHeading: "سجل المصاريف",
+      expDesc: "وصف المصروف (مثلاً: ملازم، نقل...)",
+      expAmount: "المبلغ",
+      addExpBtn: "إضافة مصروف",
+      thExpDesc: "الوصف",
+      thExpAmount: "المبلغ",
+      thExpAction: "إجراء",
+      totalExpText: "الإجمالي:",
+      safe: "آمن",
+      warning: "حذر/إنذار",
+      delete: "حذف"
+    },
+    en: {
+      title: "Faculty of Medicine - 3rd Stage",
+      subtitle: "Ashur University | Lectures, Absences & Expense Tracker",
+      langBtn: "عربي",
+      subjectsHeading: "Subjects & Lectures",
+      subjectName: "Subject Name",
+      totalLecs: "Total Lectures",
+      completedLecs: "Completed",
+      absences: "Absences",
+      warningLimit: "Warning Limit",
+      addSubjectBtn: "Add Subject",
+      thSubject: "Subject",
+      thProgress: "Progress",
+      thAbsence: "Absences",
+      thWarning: "Warning Status",
+      thAction: "Action",
+      expensesHeading: "Expense Log",
+      expDesc: "Description (e.g. Books, Transport)",
+      expAmount: "Amount",
+      addExpBtn: "Add Expense",
+      thExpDesc: "Description",
+      thExpAmount: "Amount",
+      thExpAction: "Action",
+      totalExpText: "Total:",
+      safe: "Safe",
+      warning: "Warning Risk",
+      delete: "Delete"
+    }
+  };
 
-                let lecsHTML = subj.lecs.map((lec, lIdx) => {
-                    if(lec.studied) { studiedCount++; sStudied++; }
-                    if(lec.reviewed) { reviewedCount++; sReviewed++; }
+  let subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+  let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
 
-                    return `
-                        <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl text-sm my-1">
-                            <span class="font-medium">${lec.name}</span>
-                            <div class="flex items-center gap-4 text-xs font-semibold">
-                                <label class="cursor-pointer flex items-center gap-1"><input type="checkbox" ${lec.studied ? 'checked' : ''} onchange="toggleLec(${sIdx}, ${lIdx}, 'studied')"> درستها</label>
-                                <label class="cursor-pointer flex items-center gap-1"><input type="checkbox" ${lec.reviewed ? 'checked' : ''} onchange="toggleLec(${sIdx}, ${lIdx}, 'reviewed')"> راجعتها</label>
-                                <button onclick="deleteLec(${sIdx}, ${lIdx})" class="text-red-400 hover:text-red-600 mr-2"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+  function saveAndRender() {
+    localStorage.setItem('subjects', JSON.stringify(subjects));
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+    renderSubjects();
+    renderExpenses();
+  }
 
-                let progPct = subj.lecs.length ? Math.round((sStudied / subj.lecs.length) * 100) : 0;
+  function toggleLanguage() {
+    currentLang = currentLang === 'ar' ? 'en' : 'ar';
+    document.getElementById('htmlTag').dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+    document.getElementById('htmlTag').lang = currentLang;
 
-                container.innerHTML += `
-                    <div class="border border-slate-200 dark:border-slate-800 p-4 rounded-2xl space-y-3">
-                        <div class="flex justify-between items-center flex-wrap gap-2">
-                            <div>
-                                <h3 class="font-bold text-lg text-purple-700 dark:text-purple-400">${subj.name}</h3>
-                                <p class="text-xs text-slate-400">نسبة إنجاز المادة: ${progPct}%</p>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="addLec(${sIdx})" class="px-3 py-1 bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300 font-bold rounded-lg text-xs">+ ملزمة</button>
-                                <button onclick="deleteSubject(${sIdx})" class="px-2 py-1 bg-red-100 text-red-600 font-bold rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </div>
-                        <div>${lecsHTML || '<p class="text-xs text-slate-400 py-2">لا توجد ملازم مضافة.</p>'}</div>
-                    </div>
-                `;
-            });
+    const t = translations[currentLang];
+    for (let key in t) {
+      let el = document.getElementById(key);
+      if (el) {
+        if (el.tagName === 'INPUT') el.placeholder = t[key];
+        else el.innerText = t[key];
+      }
+    }
+    renderSubjects();
+    renderExpenses();
+  }
 
-            document.getElementById('overallStudyProgress').innerText = totalLecs ? Math.round((studiedCount / totalLecs) * 100) + '%' : '0%';
-            document.getElementById('overallReviewProgress').innerText = totalLecs ? Math.round((reviewedCount / totalLecs) * 100) + '%' : '0%';
-        }
+  function addSubject() {
+    const name = document.getElementById('subjectName').value;
+    const total = parseInt(document.getElementById('totalLecs').value) || 0;
+    const completed = parseInt(document.getElementById('completedLecs').value) || 0;
+    const abs = parseInt(document.getElementById('absences').value) || 0;
+    const limit = parseInt(document.getElementById('warningLimit').value) || 0;
 
-        function addSubject() {
-            let name = prompt('أدخلي اسم المادة الطبية الجديدة:');
-            if(name) { store.subjects.push({ id: Date.now(), name, lecs: [], abs: 0, w1: 2, w2: 4, w3: 6, fail: 8 }); save(); }
-        }
+    if (!name) return;
 
-        function deleteSubject(sIdx) { if(confirm('تأكيد الحذف؟')) { store.subjects.splice(sIdx, 1); save(); } }
-        function addLec(sIdx) { let name = prompt('اسم الملزمة:'); if(name) { store.subjects[sIdx].lecs.push({ name, studied: false, reviewed: false }); save(); } }
-        function deleteLec(sIdx, lIdx) { store.subjects[sIdx].lecs.splice(lIdx, 1); save(); }
-        function toggleLec(sIdx, lIdx, key) { store.subjects[sIdx].lecs[lIdx][key] = !store.subjects[sIdx].lecs[lIdx][key]; save(); }
+    subjects.push({ name, total, completed, abs, limit });
+    saveAndRender();
+  }
 
-        function renderAbsences() {
-            const container = document.getElementById('absenceList');
-            container.innerHTML = '';
+  function renderSubjects() {
+    const tbody = document.getElementById('subjectsTable');
+    tbody.innerHTML = '';
+    const t = translations[currentLang];
 
-            store.subjects.forEach((subj, sIdx) => {
-                let status = 'طبيعي', statusColor = 'text-emerald-500 bg-emerald-50';
-                if(subj.abs >= subj.fail) { status = 'رسوب بالغياب 🚫'; statusColor = 'text-red-700 bg-red-100 font-extrabold'; }
-                else if(subj.abs >= subj.w3) { status = 'إنذار نهائي ⚠️'; statusColor = 'text-red-500 bg-red-50'; }
-                else if(subj.abs >= subj.w2) { status = 'إنذار ثانوي ⚡'; statusColor = 'text-amber-600 bg-amber-50'; }
-                else if(subj.abs >= subj.w1) { status = 'إنذار أول 🔔'; statusColor = 'text-amber-500 bg-amber-50'; }
+    subjects.forEach((sub, idx) => {
+      const pct = sub.total > 0 ? Math.round((sub.completed / sub.total) * 100) : 0;
+      const isWarn = sub.limit > 0 && sub.abs >= sub.limit;
 
-                container.innerHTML += `
-                    <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl space-y-2 text-xs">
-                        <div class="flex justify-between items-center font-bold">
-                            <span>${subj.name}</span>
-                            <span class="px-2 py-0.5 rounded-md ${statusColor}">${status}</span>
-                        </div>
-                        <div class="flex justify-between items-center text-slate-500">
-                            <span>عدد الغيابات: <strong>${subj.abs}</strong></span>
-                            <div class="flex gap-1">
-                                <button onclick="changeAbs(${sIdx}, 1)" class="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 rounded font-bold">+1 غياب</button>
-                                <button onclick="changeAbs(${sIdx}, -1)" class="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 rounded font-bold">-1</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function changeAbs(sIdx, val) { store.subjects[sIdx].abs = Math.max(0, store.subjects[sIdx].abs + val); save(); }
-
-        function renderExams() {
-            const container = document.getElementById('examsList');
-            container.innerHTML = store.exams.map((ex, idx) => `
-                <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-800 p-3 rounded-xl text-xs font-semibold">
-                    <div>
-                        <p class="font-bold text-slate-800 dark:text-slate-100">${ex.title} (${ex.type})</p>
-                        <p class="text-slate-400 mt-0.5">${ex.date}</p>
-                    </div>
-                    <button onclick="deleteExam(${idx})" class="text-red-400"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            `).join('') || '<p class="text-xs text-slate-400">لا توجد امتحانات مضافة.</p>';
-        }
-
-        function addExam() {
-            let title = prompt('اسم المادة:');
-            let date = prompt('التاريخ (YYYY-MM-DD):');
-            let type = prompt('النوع (نظري/عملي):');
-            if(title && date) { store.exams.push({ id: Date.now(), title, date, type: type || 'نظري' }); save(); }
-        }
-
-        function deleteExam(idx) { store.exams.splice(idx, 1); save(); }
-
-        function renderFinance() {
-            let totalSpent = store.expenses.reduce((acc, curr) => acc + curr.amount, 0);
-            let saved = store.budget - totalSpent;
-            document.getElementById('budgetVal').innerText = store.budget.toLocaleString() + ' د.ع';
-            document.getElementById('spentVal').innerText = totalSpent.toLocaleString() + ' د.ع';
-            document.getElementById('savedVal').innerText = saved.toLocaleString() + ' د.ع';
-            document.getElementById('statSpent').innerText = totalSpent.toLocaleString() + ' د.ع';
-            document.getElementById('statSaved').innerText = saved.toLocaleString() + ' د.ع';
-        }
-
-        function setBudget() { let b = prompt('الميزانية (د.ع):', store.budget); if(b) { store.budget = parseInt(b) || 0; save(); } }
-        function addExpense() { let amt = prompt('المبلغ (د.ع):'); if(amt) { store.expenses.push({ id: Date.now(), amount: parseInt(amt) || 0 }); save(); } }
-        function toggleDarkMode() { document.documentElement.classList.toggle('dark'); }
-
-        // Timer
-        let timerMode = 'sw', timerInterval, seconds = 0;
-        function switchTimerMode(m) {
-            timerMode = m; resetTimer();
-            document.getElementById('btnSW').className = m === 'sw' ? 'text-purple-600 border-b-2 border-purple-600 pb-1' : 'text-slate-400 pb-1';
-            document.getElementById('btnPomo').className = m === 'pomo' ? 'text-purple-600 border-b-2 border-purple-600 pb-1' : 'text-slate-400 pb-1';
-            if(m === 'pomo') seconds = 1500;
-            updateTimerDisplay();
-        }
-
-        function updateTimerDisplay() {
-            let h = String(Math.floor(seconds / 3600)).padStart(2, '0');
-            let m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-            let s = String(seconds % 60).padStart(2, '0');
-            document.getElementById('timerDisplay').innerText = timerMode === 'sw' ? `${h}:${m}:${s}` : `${m}:${s}`;
-        }
-
-        function startTimer() {
-            if(!timerInterval) {
-                timerInterval = setInterval(() => {
-                    if(timerMode === 'sw') seconds++;
-                    else { if(seconds > 0) seconds--; else { clearInterval(timerInterval); alert('انتهى البومودورو!'); } }
-                    updateTimerDisplay();
-                }, 1000);
-            }
-        }
-        function pauseTimer() { clearInterval(timerInterval); timerInterval = null; }
-        function resetTimer() { pauseTimer(); seconds = timerMode === 'sw' ? 0 : 1500; updateTimerDisplay(); }
-
-        renderAll();
-    </script>
-</body>
-</html>
+      tbody.innerHTML += `
+        <tr>
+          <td><b>${sub.name}</b></td>
+          <td>
+            ${pct}%
+            <div class="progress-bar"><div class="progress-fill" style="width: ${pct}%"></div></div>
+            <br><small>(${sub.completed}/${sub.total})</small>
+          </td>
+          <td>${sub.abs}</td>
+          <td class="${isWarn ? 'danger-text' : ''}">${isWarn ? t.warning : t.safe}</td>
+          <td><button class="delete-btn" onclick="deleteSubject(${idx})">${t.delete
